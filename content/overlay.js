@@ -224,10 +224,57 @@
   window.addEventListener('resize', handleResize, { passive: true });
 
   const DOMAIN_THEME_PRESETS = [
-    { test: host => /(^|\.)news\.ycombinator\.com$/i.test(host), color: '#ff6600' },
-    { test: host => /(^|\.)github\.com$/i.test(host), color: '#6f42c1' },
-    { test: host => /(^|\.)youtube\.com$/i.test(host), color: '#ff0000' },
-    { test: host => /(^|\.)wikipedia\.org$/i.test(host), color: '#36a7e9' }
+    {
+      id: 'ycombinator',
+      test: host => /(^|\.)ycombinator\.com$/i.test(host),
+      palette: {
+        hue: 0.08,
+        flow: 0.75,
+        colors: {
+          primary: 'rgba(255, 149, 64, 0.88)',
+          secondary: 'rgba(255, 102, 0, 0.7)',
+          base: 'rgba(92, 32, 4, 0.95)',
+          halo: 'rgba(255, 176, 82, 0.72)',
+          haloAlt: 'rgba(255, 204, 140, 0.55)',
+          faceStroke: 'rgba(255, 239, 224, 0.95)'
+        }
+      }
+    },
+    {
+      id: 'google-docs',
+      test: host => /(^|\.)docs\.google\.com$/i.test(host),
+      palette: {
+        hue: 0.58,
+        flow: 0.68,
+        colors: {
+          primary: 'rgba(66, 133, 244, 0.88)',
+          secondary: 'rgba(219, 68, 55, 0.7)',
+          base: 'rgba(15, 157, 88, 0.95)',
+          halo: 'rgba(244, 180, 0, 0.72)',
+          haloAlt: 'rgba(52, 168, 83, 0.55)',
+          faceStroke: 'rgba(255, 255, 255, 0.96)'
+        }
+      }
+    },
+    {
+      id: 'metorial',
+      test: host => /(^|\.)metorial\.com$/i.test(host),
+      palette: {
+        hue: 0.75,
+        flow: 0.7,
+        colors: {
+          primary: 'rgba(142, 68, 173, 0.86)',
+          secondary: 'rgba(241, 196, 15, 0.68)',
+          base: 'rgba(32, 46, 110, 0.94)',
+          halo: 'rgba(102, 126, 234, 0.7)',
+          haloAlt: 'rgba(241, 196, 15, 0.55)',
+          faceStroke: 'rgba(245, 238, 255, 0.95)'
+        }
+      }
+    },
+    { id: 'github', test: host => /(^|\.)github\.com$/i.test(host), color: '#6f42c1' },
+    { id: 'youtube', test: host => /(^|\.)youtube\.com$/i.test(host), color: '#ff0000' },
+    { id: 'wikipedia', test: host => /(^|\.)wikipedia\.org$/i.test(host), color: '#36a7e9' }
   ];
 
   function clamp(value, min, max) {
@@ -367,53 +414,6 @@
     return `rgba(${Math.round(color.r)}, ${Math.round(color.g)}, ${Math.round(color.b)}, ${alpha})`;
   }
 
-  function detectPresetColor(hostname) {
-    for (const preset of DOMAIN_THEME_PRESETS) {
-      try {
-        if (preset.test(hostname)) {
-          const parsed = parseColor(preset.color);
-          if (parsed) {
-            return parsed;
-          }
-        }
-      } catch (err) {
-        console.warn('[HMB:overlay] Failed to evaluate preset theme', err);
-      }
-    }
-    return null;
-  }
-
-  function detectAccentColor() {
-    const host = window.location.hostname || '';
-
-    const preset = detectPresetColor(host);
-    if (preset) return preset;
-
-    const metaTheme = document.querySelector('meta[name="theme-color" i]');
-    if (metaTheme && metaTheme.content) {
-      const parsedMeta = parseColor(metaTheme.content);
-      if (parsedMeta) return parsedMeta;
-    }
-
-    if (document.body) {
-      const bodyBg = getComputedStyle(document.body).backgroundColor;
-      const parsedBg = parseColor(bodyBg);
-      if (parsedBg && !isNearNeutral(parsedBg)) {
-        return parsedBg;
-      }
-    }
-
-    const fallback = parseColor('#7e9dff');
-    return fallback;
-  }
-
-  function isNearNeutral(color) {
-    const tolerance = 16;
-    const maxComponent = Math.max(color.r, color.g, color.b);
-    const minComponent = Math.min(color.r, color.g, color.b);
-    return (maxComponent - minComponent) < tolerance;
-  }
-
   function buildPlanetPalette(accentColor) {
     let accent = accentColor;
     if (typeof accent === 'string') {
@@ -445,12 +445,55 @@
     };
   }
 
+  function clonePalette(palette) {
+    if (!palette) return null;
+    return {
+      ...palette,
+      colors: {
+        ...(palette.colors || {})
+      }
+    };
+  }
+
+  function detectPresetPalette(hostname) {
+    for (const preset of DOMAIN_THEME_PRESETS) {
+      try {
+        if (!preset.test(hostname)) continue;
+
+        if (preset.palette) {
+          const paletteSource = typeof preset.palette === 'function'
+            ? preset.palette()
+            : preset.palette;
+          const palette = clonePalette(paletteSource);
+          if (palette) {
+            const signatureBase = preset.id || preset.signature || JSON.stringify(palette.colors || palette);
+            const signature = `preset:${signatureBase}`;
+            return { palette, signature };
+          }
+        }
+
+        if (preset.color) {
+          const parsed = parseColor(preset.color);
+          if (parsed) {
+            const palette = buildPlanetPalette(parsed);
+            const signature = `color:${preset.id || `${Math.round(parsed.r)}-${Math.round(parsed.g)}-${Math.round(parsed.b)}`}`;
+            return { palette, signature };
+          }
+        }
+      } catch (err) {
+        console.warn('[HMB:overlay] Failed to evaluate preset palette', err);
+      }
+    }
+
+    return null;
+  }
+
   let lastThemeSignature = '';
 
   function applyBubblePalette(palette) {
-    if (!bubbleEl || !palette) return;
+    if (!bubbleEl) return;
 
-    const { colors } = palette;
+    const colors = (palette && palette.colors) || {};
     const setVar = (el, name, value) => {
       if (!el) return;
       if (value) {
@@ -460,35 +503,44 @@
       }
     };
 
-    setVar(bubbleEl, '--planet-primary', colors.primary);
-    setVar(bubbleEl, '--planet-secondary', colors.secondary);
-    setVar(bubbleEl, '--planet-tertiary', colors.base);
-    setVar(bubbleEl, '--planet-highlight', colors.primary);
-    setVar(bubbleEl, '--halo-color', colors.halo);
-    setVar(bubbleEl, '--halo-color-alt', colors.haloAlt);
-    setVar(bubbleEl, '--face-stroke', colors.faceStroke);
+    setVar(bubbleEl, '--planet-primary', colors.primary ?? '');
+    setVar(bubbleEl, '--planet-secondary', colors.secondary ?? '');
+    setVar(bubbleEl, '--planet-tertiary', colors.base ?? '');
+    setVar(bubbleEl, '--planet-highlight', colors.primary ?? '');
+    setVar(bubbleEl, '--halo-color', colors.halo ?? '');
+    setVar(bubbleEl, '--halo-color-alt', colors.haloAlt ?? '');
+    setVar(bubbleEl, '--face-stroke', colors.faceStroke ?? '');
 
-    if (faceEl && colors.faceStroke) {
-      faceEl.style.setProperty('color', colors.faceStroke);
-      faceEl.style.setProperty('stroke', colors.faceStroke);
-    } else if (faceEl) {
-      faceEl.style.removeProperty('color');
-      faceEl.style.removeProperty('stroke');
+    if (faceEl) {
+      if (colors.faceStroke) {
+        faceEl.style.setProperty('color', colors.faceStroke);
+        faceEl.style.setProperty('stroke', colors.faceStroke);
+      } else {
+        faceEl.style.removeProperty('color');
+        faceEl.style.removeProperty('stroke');
+      }
     }
 
     if (planet) {
-      planet.setPaletteOverride(palette);
+      planet.setPaletteOverride(palette || null);
     }
   }
 
   function updatePlanetTheme(reason = 'auto') {
-    const accent = detectAccentColor();
-    const signature = accent ? `${Math.round(accent.r)}-${Math.round(accent.g)}-${Math.round(accent.b)}` : 'default';
-    if (signature === lastThemeSignature) return;
-    lastThemeSignature = signature;
+    const host = window.location.hostname || '';
+    const presetTheme = detectPresetPalette(host);
 
-    const palette = buildPlanetPalette(accent);
-    applyBubblePalette(palette);
+    if (presetTheme) {
+      if (presetTheme.signature === lastThemeSignature) return;
+      lastThemeSignature = presetTheme.signature;
+      applyBubblePalette(presetTheme.palette);
+      return;
+    }
+
+    if (lastThemeSignature === 'status-default') return;
+
+    lastThemeSignature = 'status-default';
+    applyBubblePalette(null);
   }
 
   if (TextCues && TextCues.attachTextListeners) {

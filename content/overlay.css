@@ -60,11 +60,11 @@
 }
 
 .hmb-bubble.focused {
-  --planet-primary: rgba(86, 212, 255, 0.82);
-  --planet-secondary: rgba(139, 126, 255, 0.55);
-  --planet-tertiary: rgba(12, 24, 52, 0.94);
-  --halo-color: rgba(88, 218, 255, 0.7);
-  --halo-color-alt: rgba(188, 146, 255, 0.6);
+  --planet-primary: rgba(59, 130, 246, 0.88);
+  --planet-secondary: rgba(96, 165, 250, 0.68);
+  --planet-tertiary: rgba(12, 32, 76, 0.95);
+  --halo-color: rgba(64, 158, 255, 0.75);
+  --halo-color-alt: rgba(147, 197, 253, 0.58);
   --flow-duration: 18s;
 }
 
@@ -78,20 +78,20 @@
 }
 
 .hmb-bubble.distracted {
-  --planet-primary: rgba(255, 142, 116, 0.86);
-  --planet-secondary: rgba(255, 94, 172, 0.55);
-  --planet-tertiary: rgba(48, 16, 32, 0.9);
-  --halo-color: rgba(255, 118, 128, 0.75);
-  --halo-color-alt: rgba(255, 168, 120, 0.6);
+  --planet-primary: rgba(255, 94, 58, 0.88);
+  --planet-secondary: rgba(255, 149, 0, 0.68);
+  --planet-tertiary: rgba(68, 18, 10, 0.92);
+  --halo-color: rgba(255, 120, 72, 0.78);
+  --halo-color-alt: rgba(255, 170, 92, 0.6);
   --flow-duration: 15s;
 }
 
 .hmb-bubble.idle {
-  --planet-primary: rgba(112, 214, 214, 0.78);
-  --planet-secondary: rgba(92, 168, 255, 0.48);
-  --planet-tertiary: rgba(16, 30, 52, 0.9);
-  --halo-color: rgba(104, 206, 198, 0.55);
-  --halo-color-alt: rgba(120, 196, 255, 0.42);
+  --planet-primary: rgba(184, 190, 201, 0.82);
+  --planet-secondary: rgba(148, 155, 168, 0.6);
+  --planet-tertiary: rgba(44, 48, 58, 0.92);
+  --halo-color: rgba(198, 204, 214, 0.55);
+  --halo-color-alt: rgba(132, 138, 150, 0.42);
   --flow-duration: 26s;
 }
 
