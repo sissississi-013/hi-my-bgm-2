@@ -9,15 +9,16 @@
 <body>
   <div class="container">
     <header class="header">
-      <h1 class="title">HI MY BGM Settings</h1>
-      <p class="subtitle">Configure your focus companion</p>
+      <p class="eyebrow">HI MY BGM</p>
+      <h1 class="title">Settings Studio</h1>
+      <p class="subtitle">Fine-tune your focus companion with a calm, clear palette.</p>
     </header>
 
     <main class="main">
       <!-- Behavior Settings -->
       <section class="section">
         <h2 class="section-title">Behavior Thresholds</h2>
-        <p class="section-desc">Adjust how the bubble detects your focus state</p>
+        <p class="section-desc">Shape how the assistant senses your rhythm and pace.</p>
 
         <div class="form-group">
           <label class="label">
@@ -41,7 +42,7 @@
       <!-- Context & Signals -->
       <section class="section">
         <h2 class="section-title">Context &amp; Signals</h2>
-        <p class="section-desc">Opt-in access that powers smarter prompts and lyrics</p>
+        <p class="section-desc">Opt in to let the assistant read the room more intuitively.</p>
 
         <div class="form-group">
           <label class="checkbox-label">
@@ -134,15 +135,14 @@
       <!-- AI Integrations -->
       <section class="section">
         <h2 class="section-title">AI Integrations (Optional)</h2>
-        <p class="section-desc">All integrations are opt-in and fail-graceful</p>
+        <p class="section-desc">Keep only the collaborators you trust in your creative loop.</p>
 
         <!-- Captain AI -->
         <div class="form-group">
           <label class="checkbox-label">
             <input type="checkbox" id="use-captain">
-            <span>
-              <strong>Captain AI</strong> - Agent orchestration
-              <a href="https://docs.runcaptain.com/" target="_blank" class="link">docs</a>
+            <span class="checkbox-text">
+              <strong>Captain AI</strong>
             </span>
           </label>
           <div class="nested-inputs" id="captain-config">
@@ -155,9 +155,8 @@
         <div class="form-group">
           <label class="checkbox-label">
             <input type="checkbox" id="use-metorial">
-            <span>
-              <strong>Metorial AI</strong> - User memory & personalization
-              <a href="https://metorial.com" target="_blank" class="link">info</a>
+            <span class="checkbox-text">
+              <strong>Metorial AI</strong>
             </span>
           </label>
           <div class="nested-inputs" id="metorial-config">
@@ -170,9 +169,8 @@
         <div class="form-group">
           <label class="checkbox-label">
             <input type="checkbox" id="use-coval">
-            <span>
-              <strong>Coval AI</strong> - Voice TTS
-              <a href="https://www.coval.dev/" target="_blank" class="link">docs</a>
+            <span class="checkbox-text">
+              <strong>Coval AI</strong>
             </span>
           </label>
           <div class="nested-inputs" id="coval-config">
@@ -185,7 +183,7 @@
         <div class="form-group">
           <label class="checkbox-label">
             <input type="checkbox" id="use-voice-coach" checked>
-            <span><strong>Voice Coach</strong> - Spoken focus nudges</span>
+            <span class="checkbox-text"><strong>Voice Coach</strong></span>
           </label>
         </div>
 
@@ -193,7 +191,7 @@
         <div class="form-group">
           <label class="checkbox-label">
             <input type="checkbox" id="use-openai">
-            <span><strong>OpenAI</strong> - LLM for reasoning</span>
+            <span class="checkbox-text"><strong>OpenAI</strong></span>
           </label>
           <div class="nested-inputs" id="openai-config">
             <input type="password" id="openai-api-key" placeholder="OpenAI API Key" class="input">
@@ -204,7 +202,7 @@
         <div class="form-group">
           <label class="checkbox-label">
             <input type="checkbox" id="use-anthropic">
-            <span><strong>Anthropic</strong> - Claude for reasoning</span>
+            <span class="checkbox-text"><strong>Anthropic</strong></span>
           </label>
           <div class="nested-inputs" id="anthropic-config">
             <input type="password" id="anthropic-api-key" placeholder="Anthropic API Key" class="input">
@@ -216,9 +214,8 @@
       <section class="section">
         <h2 class="section-title">Privacy</h2>
         <p class="privacy-notice">
-          Page text, typed cues, and lyric hooks are only used when enabled above and never stored.
-          HI MY BGM stores interaction timestamps and counters locally.
-          All cloud integrations are opt-in and configurable.
+          Page text, typed cues, and lyric hooks stay on-device unless you enable sharing.
+          Interaction timestamps and counters remain local, and every cloud integration is opt in.
         </p>
       </section>
 

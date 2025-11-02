@@ -6,6 +6,8 @@
 (function() {
   'use strict';
 
+  const extensionAvailable = typeof chrome !== 'undefined' && chrome.storage && chrome.storage.sync;
+
   // DOM elements
   const idleTimeout = document.getElementById('idle-timeout');
   const idleValue = document.getElementById('idle-value');
@@ -113,7 +115,21 @@
   }
 
   function loadSettings() {
+    if (!extensionAvailable) {
+      applySettings({});
+      saveBtn.disabled = true;
+      resetBtn.disabled = true;
+      statusMessage.textContent = 'Preview mode: install the extension to enable saving.';
+      statusMessage.className = 'status-message info';
+      return;
+    }
+
     chrome.storage.sync.get(null, (result) => {
+      applySettings(result);
+    });
+  }
+
+  function applySettings(result) {
       // Behavior
       idleTimeout.value = result.idleTimeout || 10;
       idleValue.textContent = idleTimeout.value;
@@ -190,10 +206,14 @@
       if (useAnthropic.checked) {
         anthropicConfig.classList.add('active');
       }
-    });
   }
 
   function saveSettings() {
+    if (!extensionAvailable) {
+      showStatus('Preview mode: settings are not saved outside the extension.', 'info');
+      return;
+    }
+
     const settings = {
       // Behavior
       idleTimeout: parseInt(idleTimeout.value, 10),
@@ -251,6 +271,11 @@
   }
 
   function resetSettings() {
+    if (!extensionAvailable) {
+      showStatus('Preview mode: defaults available inside the extension.', 'info');
+      return;
+    }
+
     if (!confirm('Reset all settings to defaults? This cannot be undone.')) {
       return;
     }

@@ -6,6 +6,8 @@
 (function() {
   'use strict';
 
+  const extensionAvailable = typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage;
+
   // DOM elements
   const stateIcon = document.getElementById('state-icon');
   const stateLabel = document.getElementById('state-label');
@@ -27,6 +29,11 @@
   init();
 
   async function init() {
+    if (!extensionAvailable) {
+      renderPreviewState();
+      return;
+    }
+
     // Load current state from storage
     await loadState();
 
@@ -134,6 +141,10 @@
   }
 
   async function handleToggleMusic() {
+    if (!extensionAvailable) {
+      return;
+    }
+
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
     console.log('[HMB:popup] Toggle music clicked, tab:', tab);
@@ -170,10 +181,19 @@
   }
 
   function handleOpenSettings() {
-    chrome.runtime.openOptionsPage();
+    if (extensionAvailable) {
+      chrome.runtime.openOptionsPage();
+    } else {
+      window.open('../options/options.html', '_blank');
+    }
   }
 
   async function handleModeChange(event) {
+    if (!extensionAvailable) {
+      event.preventDefault();
+      return;
+    }
+
     const mode = event.target.value;
     console.log('[HMB:popup] Mode changed to:', mode);
 
@@ -206,6 +226,10 @@
   }
 
   function updateStats() {
+    if (!extensionAvailable) {
+      return;
+    }
+
     // Update session time
     const elapsed = Math.floor((Date.now() - sessionStart) / 60000); // minutes
     sessionTimeEl.textContent = elapsed > 0 ? `${elapsed}m` : '0m';
@@ -216,6 +240,10 @@
    * Content scripts are restricted on chrome://, chrome-extension://, and other special pages
    */
   function canRunOnTab(tab) {
+    if (!extensionAvailable) {
+      return false;
+    }
+
     if (!tab) {
       console.log('[HMB:popup] No tab object');
       return false;
@@ -258,6 +286,20 @@
 
     console.log('[HMB:popup] URL is OK');
     return true;
+  }
+
+  function renderPreviewState() {
+    stateIcon.textContent = '🙂';
+    stateLabel.textContent = 'Preview';
+    stateMessage.textContent = 'Activate the extension to control playback.';
+    toggleBtn.disabled = true;
+    settingsBtn.title = 'Open settings preview';
+    settingsBtn.addEventListener('click', handleOpenSettings);
+    modeRadios.forEach(radio => {
+      radio.disabled = true;
+    });
+    tabSwitchesEl.textContent = '—';
+    sessionTimeEl.textContent = '—';
   }
 
 })();
