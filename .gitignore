@@ -22,6 +22,7 @@ ENV/
 # Temp files
 *.log
 *.tmp
+node_modules/
 
 # Chrome extension
 *.crx

@@ -6,15 +6,15 @@
 // Mood configurations mapped to shader uniforms
 const MOODS = {
   focused: {
-    hue: 0.57,        // luminous cyan/blue
+    hue: 0.58,        // deep focus blue
     flow: 0.75,
     distort: 0.28,
     luma: 0.86,
     beatAmt: 0.28,
     colors: {
-      primary: 'rgba(86, 212, 255, 0.82)',
-      secondary: 'rgba(139, 126, 255, 0.55)',
-      base: 'rgba(12, 24, 52, 0.94)'
+      primary: 'rgba(59, 130, 246, 0.88)',
+      secondary: 'rgba(96, 165, 250, 0.68)',
+      base: 'rgba(12, 32, 76, 0.95)'
     }
   },
   neutral: {
@@ -30,27 +30,27 @@ const MOODS = {
     }
   },
   distracted: {
-    hue: 0.04,        // warm alert hue
+    hue: 0.05,        // urgent red-orange
     flow: 1.15,
     distort: 0.45,
     luma: 0.88,
     beatAmt: 0.35,
     colors: {
-      primary: 'rgba(255, 142, 116, 0.86)',
-      secondary: 'rgba(255, 94, 172, 0.55)',
-      base: 'rgba(48, 16, 32, 0.9)'
+      primary: 'rgba(255, 94, 58, 0.88)',
+      secondary: 'rgba(255, 149, 0, 0.68)',
+      base: 'rgba(68, 18, 10, 0.92)'
     }
   },
   idle: {
-    hue: 0.54,        // soft calm blue
+    hue: 0.58,        // gentle grey-blue
     flow: 0.25,
     distort: 0.12,
     luma: 0.72,
     beatAmt: 0.12,
     colors: {
-      primary: 'rgba(112, 214, 214, 0.78)',
-      secondary: 'rgba(92, 168, 255, 0.48)',
-      base: 'rgba(16, 30, 52, 0.9)'
+      primary: 'rgba(184, 190, 201, 0.82)',
+      secondary: 'rgba(148, 155, 168, 0.6)',
+      base: 'rgba(44, 48, 58, 0.92)'
     }
   },
   upbeat: {
